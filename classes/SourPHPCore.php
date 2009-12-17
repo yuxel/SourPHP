@@ -1,6 +1,6 @@
 <?
 /**
- * SourPHP
+ * SourPHPCore
  *
  * LICENSE
  *
@@ -15,12 +15,12 @@
 
 
 /**
- * SourPHP 
+ * SourPHPCore
  *
  * PHP Client to fetch data from http://sozluk.sourtimes.org
  * @author    Osman Yuksel <yuxel |AT| sonsuzdongu |DOT| com>
  */
-class sourPHP{
+class SourPHPCore{
 
     /**
      * Default request address
@@ -45,7 +45,7 @@ class sourPHP{
      * @return string Content of url, returns false if fails
      */
     function fetchUrl($url) {
-        if( $data = file_get_contents($url) ) {
+        if( $data = @file_get_contents($url) ) {
             return $data;
         }
         return false;
@@ -209,13 +209,9 @@ class sourPHP{
                                "dateCreated"=>$dateCreated,
                                "dateEdited"=>$dateEdited);
 
-            var_dump($results);
-            return true;
         }
 
-
-
-
+        return empty($results)?false:$results;
 
     }
 }

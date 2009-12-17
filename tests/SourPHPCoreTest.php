@@ -13,7 +13,7 @@
  */
 
 
-include_once ("../classes/SourPHP.php");
+include_once ("../classes/SourPHPCore.php");
 
 /**
  * SourPHPTest
@@ -21,20 +21,28 @@ include_once ("../classes/SourPHP.php");
  * Test Cases for SourPHP
  * @author    Osman Yuksel <yuxel |AT| sonsuzdongu |DOT| com>
  */
-class SourPHPTest extends PHPUnit_Framework_TestCase
+class SourPHPCoreTest extends PHPUnit_Framework_TestCase
 {
    
     /**
      * init sourPHP object for each test
      */ 
     function setUp(){
-        $this->obj = new SourPHP();
+        $this->obj = new SourPHPCore();
     }
+
+
 
 
     function testIfDataReturnedOnFetch() {
         $result = $this->obj->fetchUrl("http://sozluk.sourtimes.org/show.asp?t=madde+97%2F%2317410156&pad=1");
         $this->assertNotNull ($result);
+    }
+
+    function testIfNoUrlSentToFetch(){
+        $result = $this->obj->fetchUrl("invalid-url");
+        $this->assertFalse ($result);
+
     }
 
 
@@ -59,6 +67,18 @@ class SourPHPTest extends PHPUnit_Framework_TestCase
     function testFetchEntry() {
         $result = $this->obj->fetchEntry("php");
         $this->assertNotNull ($result);
+    }
+
+    function testFetchEntryOnSecondPage() {
+        $result = $this->obj->fetchEntry("php",2);
+        $this->assertNotNull ($result);
+    }
+
+
+
+    function testFetchNullEntry(){
+        $result = $this->obj->fetchEntry(null);
+        $this->assertFalse ($result);
     }
 
     function testFetchEntryWhichHasTurkishChars() {
@@ -105,6 +125,18 @@ class SourPHPTest extends PHPUnit_Framework_TestCase
         $title = $this->obj->getEntryTitleFromDoc($doc);
 
         $this->assertEquals($title, "php");
+
+    }
+
+
+    function testGetEntryTitleFromADocWhichDoesntHaveTitleField(){
+        $data = "<span>Foobar</span>";
+
+        $doc = $this->obj->createDomDocumentFromData($data);
+        $title = $this->obj->getEntryTitleFromDoc($doc);
+
+        $this->assertFalse($title);
+
 
     }
 
@@ -156,8 +188,24 @@ class SourPHPTest extends PHPUnit_Framework_TestCase
 
         $entries = $this->obj->getContentOfEntriesFromDoc($doc);
 
+        $this->assertArrayHasKey('0', $entries);
+        $this->assertArrayHasKey('entryId', $entries[0]);
 
     }
+
+
+    function testGetContentsOfEntriesFromDocWhichDoesntHaveAnIdField() {
+        $data = $this->obj->fetchEntry("this entry will never exists on eksisozluk foobar");
+        $doc = $this->obj->createDomDocumentFromData($data);
+
+        $entries = $this->obj->getContentOfEntriesFromDoc($doc);
+
+        $this->assertFalse($entries);
+
+
+    }
+
+
 
 }
 
