@@ -30,10 +30,20 @@ class SourPHPCore{
     protected static $url = null;
 
     /**
+     * Num of entries per page
+     *
+     * @var String 
+     */
+    protected static $contentPerPage = null;
+
+
+
+    /**
      * Init default parameters
      */
     public function __construct() {
         $this->url = "http://sozluk.sourtimes.org/";
+        $this->contentPerPage = 25; 
     }
 
 
@@ -107,6 +117,9 @@ class SourPHPCore{
      * @return DomDucument object
      */
     function createDomDocumentFromData($data) {
+        if(!$data) {
+            return false;
+        }
         $doc = new DOMDocument();
         $doc->loadHTML ($data);
         return $doc;
@@ -166,48 +179,69 @@ class SourPHPCore{
         return (int) $totalPageNum;
     }
 
+
+    /**
+     * parses author, dateCreated and dateEdited from $string
+     */
+    function parseAuthorAndDateFromString($string){
+        $trimSpaces = trim($string);
+        $trimmed = trim($trimSpaces, "(");
+        $exploded = explode(")", $trimmed);
+        $content = $exploded[0];
+
+        list($author, $dates) = explode(",", $content);
+        list($dateCreated, $dateEdited) = explode("~", $dates);
+
+        $author = trim($author);
+        $dateCreated = strtotime( trim( $dateCreated) );
+        $dateEdited = strtotime( trim ( $dateEdited) );
+
+        return array($author, $dateCreated, $dateEdited);
+    }
+
+
     /**
      * returns content of entry from read document
      *
      * @param DomDucument $doc
      * @return array entries[content, author, id, order, datetime]
+     * @todo this could be faster
      */
     function getContentOfEntriesFromDoc($doc) {
-        $xpath = new DOMXPath($doc);
-   
+        if(!$doc) {
+            return false;
+        }
+
         $query = "//ol[@id='el']/li";
-        $metaDivQuery = "//div[@class='aul']";
-        $authorQuery = "//div[@class='aul']/a/text()";
-        $dateTimeQuery = "//div[@class='aul']/text()";
+
+        $title = $this->getEntryTitleFromDoc($doc);
 
         $nodeList = $this->XPathQueryToDoc($doc, $query);
         
         foreach($nodeList as $node) {
+            $childCount = $node->childNodes->length;
+            $lastNode = $node->childNodes->item($childCount-1);
+
+            list($author, $dateCreated, $dateEdited) = $this->parseAuthorAndDateFromString($lastNode->textContent);
+
+            $node->removeChild ($lastNode );
+            $contentNode = $node;
+
+            $content = $contentNode->textContent;
 
             $entryId = $node->getAttribute('id');
-            $entryId = preg_replace ( '/[^0-9]/', '', $entryId );
+            $entryId = (int) preg_replace ( '/[^0-9]/', '', $entryId );
 
             $order = (int) $node->getAttribute("value");
 
-            $authorNodes = $xpath->evaluate ($authorQuery, $node);
-            foreach($authorNodes as $authorNode) {
-                $author = $authorNode->nodeValue;
-            }
-           
-            $dateTimeNodes = $xpath->evaluate ($dateTimeQuery, $node);
-            foreach($dateTimeNodes as $dateTimeNode) {
-                $dateTime = explode( "~", trim($dateTimeNode->nodeValue,")") );
-            
-                $dateCreated = trim(trim($dateTime[0],","));
-                $dateEdited = trim($dateTime[1]);
-
-            }
-
             $results[] = array("entryId"=>$entryId,
+                               "title"=>$title,
+                               "content"=>$content,
                                "order"=>$order,
                                "author"=>$author,
                                "dateCreated"=>$dateCreated,
-                               "dateEdited"=>$dateEdited);
+                               "dateEdited"=>$dateEdited 
+                               );
 
         }
 

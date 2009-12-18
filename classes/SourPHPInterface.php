@@ -25,6 +25,8 @@ interface SourPHPInterface{
     public function getEntryById($entryId);
 
     
-    public function getEntryByTitle($entryTitle); 
+    public function getEntryByTitle($entryTitle, $page=1); 
+
+    public function getAllEntriesByTitle($entryTitle);
 
 }

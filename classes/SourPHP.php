@@ -12,7 +12,6 @@
  * @version    0.1
  */
 
-
 require_once("SourPHPInterface.php");
 require_once("SourPHPCore.php");
 
@@ -23,13 +22,58 @@ require_once("SourPHPCore.php");
  * @author    Osman Yuksel <yuxel |AT| sonsuzdongu |DOT| com>
  */
 class SourPHP extends SourPHPCore implements SourPHPInterface{
+
+
+    /**
+     * fetches entry details by id
+     *
+     * @param int $entryId
+     * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
+     */ 
     public function getEntryById($entryId){
-        return array("title"=>"pena");
+        $data = $this->fetchId($entryId);
+        $doc = $this->createDomDocumentFromData($data);
+        $details = $this->getContentOfEntriesFromDoc($doc);
+
+        $entryDetail = $details[0];
+        return $entryDetail;
     }
 
-    
-    public function getEntryByTitle($entryTitle){
-    return true;
+    /**
+     * fetches entry details by entry title
+     *
+     * @param string $entryTitle
+     * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
+     */ 
+    public function getEntryByTitle($entryTitle, $page=1){
+        $data = $this->fetchEntry($entryTitle, $page);
+        $doc = $this->createDomDocumentFromData($data);
+        $details = $this->getContentOfEntriesFromDoc($doc);
+
+        return $details;
     }
+
+
+    /**
+     * fetches all entries by entry title
+     * 
+     * @param string $entryTitle
+     * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
+     */
+    public function getAllEntriesByTitle($entryTitle){
+        $data = $this->fetchEntry($entryTitle, $page);
+        $doc = $this->createDomDocumentFromData($data);
+        $numOfPages = $this->getNumberOfPages($doc); 
+        $details = array();
+
+        for($i=1;$i<=$numOfPages;$i++){
+            $detailsOfPage =  $this->getEntryByTitle($entryTitle, $i);
+            $details = array_merge($details, $detailsOfPage);
+        }
+
+
+        return $details;
+    }
+        
 
 }

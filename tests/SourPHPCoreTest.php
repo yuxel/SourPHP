@@ -100,6 +100,17 @@ class SourPHPCoreTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * test if document created successfully
+     */
+    function testToCreateDomDocumentFromDataIfDataIsNull() {
+        $returned = $this->obj->createDomDocumentFromData(null);
+        $this->assertFalse($returned);
+    }
+
+
+
+
 
     function testXpathQuery(){
         $contentOfFirstDiv="hello";
@@ -197,14 +208,16 @@ class SourPHPCoreTest extends PHPUnit_Framework_TestCase
     function testGetContentsOfEntriesFromDocWhichDoesntHaveAnIdField() {
         $data = $this->obj->fetchEntry("this entry will never exists on eksisozluk foobar");
         $doc = $this->obj->createDomDocumentFromData($data);
-
         $entries = $this->obj->getContentOfEntriesFromDoc($doc);
-
         $this->assertFalse($entries);
 
 
     }
 
+    function testGetContentsOfEntriesFromNullDoc() {
+        $entries = $this->obj->getContentOfEntriesFromDoc(null);
+        $this->assertFalse($entries);
+    }
 
 
 }
