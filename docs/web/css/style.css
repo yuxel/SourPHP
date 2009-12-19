@@ -27,6 +27,8 @@ text-decoration:none;
 }
 
 #mainContent p{margin:5px 0 20px 30px; color:#666699}
+#mainContent ul{margin:5px 0 20px 40px; color:#666699}
+#mainContent li {list-style-type:square}
 
 #mainContent .donate{margin:0 0 20px 30px; color:#666699;}
 
