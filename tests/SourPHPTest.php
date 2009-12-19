@@ -29,6 +29,7 @@ class SourPHPTest extends SourPHPCoreTest
      * init sourPHP object for each test
      */ 
     function setUp(){
+        parent::setUp();
         $this->obj = new SourPHP();
     }
 

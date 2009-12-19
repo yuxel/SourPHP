@@ -24,13 +24,9 @@ include_once ("../classes/SourPHPCore.php");
 class SourPHPCoreTest extends PHPUnit_Framework_TestCase
 {
 
-    /**
-     * this is now executed from SourPHPTest class
-     *
     function setUp(){
         $this->obj = new SourPHPCore();
     }
-    */
 
 
 
