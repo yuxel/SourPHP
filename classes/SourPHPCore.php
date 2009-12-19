@@ -205,25 +205,28 @@ class SourPHPCore{
      *
      * @param DomDucument $doc
      * @return array entries[content, author, id, order, datetime]
-     * @todo this could be faster
      */
     function getContentOfEntriesFromDoc($doc) {
         if(!$doc) {
             return false;
         }
 
+        // this xpath query etches li element which as all details of entry
         $query = "//ol[@id='el']/li";
 
+        //find title
         $title = $this->getEntryTitleFromDoc($doc);
 
         $nodeList = $this->XPathQueryToDoc($doc, $query);
         
         foreach($nodeList as $node) {
             $childCount = $node->childNodes->length;
-            $lastNode = $node->childNodes->item($childCount-1);
 
+            //lastNode has information about author and dates
+            $lastNode = $node->childNodes->item($childCount-1);
             list($author, $dateCreated, $dateEdited) = $this->parseAuthorAndDateFromString($lastNode->textContent);
 
+            //if we remove lastChild, our node is our content
             $node->removeChild ($lastNode );
             $contentNode = $node;
 
