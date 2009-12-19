@@ -104,6 +104,31 @@ class SourPHPTest extends SourPHPCoreTest
         $this->assertEquals($firstEntryContent, '(bkz: echo)');
 
     }
- 
+
+    /**
+     * @test
+     */
+    function getEntriesOfTitleIfDoesntHaveAnyEntryAfterThisDate(){
+        $time = strtotime("30.01.2020 13:38");
+        $result = $this->obj->getEntriesByTitleAfterGivenTime("php",$time);
+
+        $this->assertFalse($result);
+
+    }
+    
+    /**
+     * should fetch all entries
+     * @test
+     */
+    function getEntriesOfTitleAfterNullDate(){
+
+        $result = $this->obj->getEntriesByTitleAfterGivenTime("php",null);
+
+        $firstEntryContent = $result[0]['content'];
+        $this->assertEquals($firstEntryContent, 'bir scripting dili.');
+
+    }
+
+
 
 } 
