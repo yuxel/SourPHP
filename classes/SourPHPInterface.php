@@ -29,22 +29,32 @@ interface SourPHPInterface{
      */
     public function getEntryById($entryId);
 
-     /**
+    /**
      * fetches entries properties by title and $page
      *
-     * @param int $entryId entry id
+     * @param string $entryTitle 
      * @param int $page page number
      * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
      */
     public function getEntryByTitle($entryTitle, $page=1); 
 
 
-     /**
+    /**
      * fetches all entries on title
      *
-     * @param int $entryId entry id
+     * @param string $entryTitle
      * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
      */
     public function getAllEntriesByTitle($entryTitle);
+
+
+    /**
+     * fetch entries, which are created after $timestamp
+     *
+     * @param string $entryTitle
+     * @param int $timestamp entries created after this time
+     * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
+     */
+    public function getEntriesByTitleAfterGivenTime($entry, $timestamp);
 
 }

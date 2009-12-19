@@ -92,4 +92,18 @@ class SourPHPTest extends SourPHPCoreTest
 
     }
 
+    /**
+     * @test
+     */
+    function getEntriesAfterGivenTime(){
+        $time = strtotime("30.01.2008 13:38");
+        $result = $this->obj->getEntriesByTitleAfterGivenTime("php",$time);
+
+        //first entry after $time is '(bkz: echo)'
+        $firstEntryContent = $result[0]['content'];
+        $this->assertEquals($firstEntryContent, '(bkz: echo)');
+
+    }
+ 
+
 } 

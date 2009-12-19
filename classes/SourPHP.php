@@ -71,9 +71,37 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
             $details = array_merge($details, $detailsOfPage);
         }
 
-
         return $details;
     }
+
+
+    /**
+     * fetch entries, which are created after $timestamp
+     * this could be useful on such thing like feed aggregator
+     *
+     * @param string $entryTitle
+     * @param int $timestamp entries created after this time
+     * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
+     */
+    public function getEntriesByTitleAfterGivenTime($entryTitle, $timestamp){
+
+        $details = $this->getAllEntriesByTitle($entryTitle);
+
+        foreach($details as $key=>$value){
+            if($value['dateCreated'] > $timestamp) {
+                $foundKey = $key;
+                break;
+            }
+        }
+
+        $foundEntries = array_slice($details, $foundKey);    
+
+        return $foundEntries;
+    }
+
+
+
+
         
 
 }
