@@ -87,6 +87,8 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
 
         $details = $this->getAllEntriesByTitle($entryTitle);
 
+        $foundKey = count($details);
+
         foreach($details as $key=>$value){
             if($value['dateCreated'] > $timestamp) {
                 $foundKey = $key;
@@ -96,7 +98,10 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
 
         $foundEntries = array_slice($details, $foundKey);    
 
-        return $foundEntries;
+
+        $return = empty($foundEntries)?false:$foundEntries;
+
+        return $return;
     }
 
 
