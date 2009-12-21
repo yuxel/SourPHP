@@ -84,21 +84,27 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
      * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
      */
     public function getEntriesByTitleAfterGivenTime($entryTitle, $timestamp){
+        $data = $this->fetchEntry($entryTitle, -1);
+        $doc = $this->createDomDocumentFromData($data);
+        $numOfPages = $this->getNumberOfPages($doc); 
+        $details = array();
 
-        $details = $this->getAllEntriesByTitle($entryTitle);
-
-        $foundKey = count($details);
-
-        foreach($details as $key=>$value){
-            if($value['dateCreated'] > $timestamp) {
-                $foundKey = $key;
-                break;
+        for($i=$numOfPages;$i>=0;$i--){
+            $detailsOfPage =  $this->getEntryByTitle($entryTitle, $i);
+            $detailsOfPage = array_reverse($detailsOfPage);
+            foreach($detailsOfPage as $key=>$value){
+                if($value['dateCreated'] < $timestamp) {
+                    $foundKey = ($this->contentPerPage - $key ) + 1; 
+                    $i = 0;
+                    break;
+                }
             }
+            $details = array_merge($details, $detailsOfPage);
         }
 
+        $details = array_reverse($details);
+
         $foundEntries = array_slice($details, $foundKey);    
-
-
         $return = empty($foundEntries)?false:$foundEntries;
 
         return $return;

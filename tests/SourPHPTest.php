@@ -106,7 +106,7 @@ class SourPHPTest extends SourPHPCoreTest
     }
 
     /**
-     * @test
+     * @xtest
      */
     function getEntriesOfTitleIfDoesntHaveAnyEntryAfterThisDate(){
         $time = strtotime("30.01.2020 13:38");
@@ -118,7 +118,7 @@ class SourPHPTest extends SourPHPCoreTest
     
     /**
      * should fetch all entries
-     * @test
+     * @xtest
      */
     function getEntriesOfTitleAfterNullDate(){
 

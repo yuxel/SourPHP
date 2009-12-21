@@ -89,6 +89,13 @@ class SourPHPCoreTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull ($result);
     }
 
+    /**
+     * @test
+     */
+    function FetchEntryOnLastPage() {
+        $result = $this->obj->fetchEntry("php",-1);
+        $this->assertNotNull ($result);
+    }
 
 
     /**

@@ -84,7 +84,7 @@ class SourPHPCore{
      * fetchs an entry per page
      *
      * @param  string $entryName
-     * @param  int $page
+     * @param  int $page, -1 for last page
      * @return string Content of entry
      */
     function fetchEntry( $entryName , $page=1) {
@@ -103,7 +103,13 @@ class SourPHPCore{
             $pageToGo = $page;
         }
 
-        $url = $this->url."show.asp?t=".$encodedEntryName."&p=".$pageToGo;
+        if($page>0) {
+            $url = $this->url."show.asp?t=".$encodedEntryName."&p=".$pageToGo;
+        }
+        else{
+            //if page < 1, fetch last page
+            $url = $this->url."show.asp?t=".$encodedEntryName."&i=2099999999";
+        }
 
         return $this->fetchUrl($url);
     }
