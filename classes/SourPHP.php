@@ -93,9 +93,11 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
             $detailsOfPage =  $this->getEntryByTitle($entryTitle, $i);
 
             $detailsOfPage = array_reverse((array)$detailsOfPage);
+            $itemCount = count ( $detailsOfPage );
+
             foreach($detailsOfPage as $key=>$value){
                 if($value['dateCreated'] < $timestamp) {
-                    $foundKey = ($this->contentPerPage - $key ) + 1; 
+                    $foundKey = ($itemCount - $key ) + 1; 
                     $i = 0;
                     break;
                 }

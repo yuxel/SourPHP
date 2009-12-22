@@ -106,6 +106,21 @@ class SourPHPTest extends SourPHPCoreTest
     }
 
     /**
+     * @test
+     */
+    function getEntriesAfterGivenTimeAtLastPage(){
+        $time = strtotime("22.07.2009 23:38");
+        $result = $this->obj->getEntriesByTitleAfterGivenTime("php",$time);
+
+        //first entry after $time is '(bkz: phpazure)'
+        $firstEntryContent = $result[0]['content'];
+        $this->assertEquals($firstEntryContent, '(bkz: phpazure)');
+
+    }
+
+
+
+    /**
      * @xtest
      */
     function getEntriesOfTitleIfDoesntHaveAnyEntryAfterThisDate(){
