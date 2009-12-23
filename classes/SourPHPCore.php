@@ -127,7 +127,7 @@ class SourPHPCore{
             return false;
         }
         $doc = new DOMDocument();
-        $doc->loadHTML ($data);
+        @$doc->loadHTML ($data);
         return $doc;
     }
 
@@ -233,7 +233,9 @@ class SourPHPCore{
             list($author, $dateCreated, $dateEdited) = $this->parseAuthorAndDateFromString($lastNode->textContent);
 
             //if we remove lastChild, our node is our content
-            $node->removeChild ($lastNode );
+            if( $lastNode ) {
+                $node->removeChild ($lastNode );
+            }
             $contentNode = $node;
 
             $content = $contentNode->textContent;
