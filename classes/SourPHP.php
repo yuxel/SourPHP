@@ -84,6 +84,7 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
      * @return mixed array(entryId,title, content, order, author, dateCreated, dateEdited)
      */
     public function getEntriesByTitleAfterGivenTime($entryTitle, $timestamp){
+        $timestamp = $timestamp + 60;
         $data = $this->fetchEntry($entryTitle, -1);
         $doc = $this->createDomDocumentFromData($data);
         $numOfPages = $this->getNumberOfPages($doc); 
@@ -97,7 +98,7 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
 
             foreach($detailsOfPage as $key=>$value){
                 if($value['dateCreated'] < $timestamp) {
-                    $foundKey = ($itemCount - $key ) + 1; 
+                    $foundKey = ($itemCount - $key ); 
                     $i = 0;
                     break;
                 }

@@ -191,7 +191,7 @@ class SourPHPCoreTest extends PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * "php" entry has 7 pages for now
+     * "php" entry has 8 pages for now
      * @fixme this could change later
      */
     function GetNumberOfPages(){
@@ -200,7 +200,7 @@ class SourPHPCoreTest extends PHPUnit_Framework_TestCase
 
         $numOfPages = $this->obj->getNumberOfPages($doc);
 
-        $this->assertEquals($numOfPages, 7);
+        $this->assertEquals($numOfPages, 8);
 
     }
 
