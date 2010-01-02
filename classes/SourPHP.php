@@ -91,7 +91,14 @@ class SourPHP extends SourPHPCore implements SourPHPInterface{
         $details = array();
 
         for($i=$numOfPages;$i>=0;$i--){
-            $detailsOfPage =  $this->getEntryByTitle($entryTitle, $i);
+            
+            if($i == $numOfPages) {
+                //dont fetch last page again, its fetch when we call getNumberOfPages
+                $detailsOfPage =  $this->getEntryByTitle($entryTitle, -1);
+            }
+            else{
+                $detailsOfPage =  $this->getEntryByTitle($entryTitle, $i);
+            }
 
             $detailsOfPage = array_reverse((array)$detailsOfPage);
             $itemCount = count ( $detailsOfPage );
