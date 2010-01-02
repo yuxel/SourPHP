@@ -269,5 +269,73 @@ class SourPHPCoreTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * @test
+     */
+    function cacheHandlerMustBeInstanceOfSourPHPUrlCacheInterface(){
+            include_once ("../classes/SourPHPUrlCacheToFile.php");
+
+            $handler = new SourPHPUrlCacheToFile();
+
+            $handlerSet = $this->obj->setCacheHandler ( $handler );
+
+            $this->assertTrue ( $handlerSet );
+    }
+
+    /**
+     * @test
+     */
+    function returnFalseIfCacheHandlerNotAValidInstance(){
+            $handler = new StdClass();
+
+            $handlerSet = $this->obj->setCacheHandler ( $handler );
+
+            $this->assertFalse ( $handlerSet );
+    }
+
+
+    /**
+     * @test
+     */
+    function setCacheLifeTime(){
+        $time = 300;
+        $cacheLifeTime =  $this->obj->setCacheLifeTime ( $time );
+
+        $this->assertEquals ( $cacheLifeTime, $time );
+    }
+
+
+    /**
+     * @test
+     */
+    function fetchUrWhenCacheHandlerSet(){
+        include_once ("../classes/SourPHPUrlCacheToFile.php");
+        $handler = new SourPHPUrlCacheToFile();
+
+        $this->obj->setCacheLifeTime( 300 );
+        $this->obj->setCacheHandler ( $handler );
+        $this->obj->setCachePrefix ( "/tmp/url_" );
+
+        $result = $this->obj->fetchUrl("http://sozluk.sourtimes.org/show.asp?t=madde+97%2F%2317410156&pad=1");
+        $this->assertNotNull ($result);
+    }
+
+
+
+    /**
+     * @test
+     */
+    function cacheExpired(){
+        include_once ("../classes/SourPHPUrlCacheToFile.php");
+        $handler = new SourPHPUrlCacheToFile();
+
+        $this->obj->setCacheLifeTime( -1 );
+        $this->obj->setCacheHandler ( $handler );
+        $this->obj->setCachePrefix ( "/tmp/url_" );
+
+        $result = $this->obj->fetchUrl("http://sozluk.sourtimes.org/show.asp?t=madde+97%2F%2317410156&pad=1");
+        $this->assertNotNull ($result);
+    }
+
 }
 

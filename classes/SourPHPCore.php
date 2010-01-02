@@ -37,6 +37,29 @@ class SourPHPCore{
     protected static $contentPerPage = null;
 
 
+    /**
+     * cache handler, instance of SourPHPUrlCacheInterface
+     *
+     * @var object
+     */
+    protected $_cacheHandler = null;
+
+    /**
+     * prefix for cached hashs
+     *
+     * @var string
+     */
+    protected $_cachePrefix = null;
+
+
+
+    /**
+     * cache lifetime for handler
+     *
+     * @var int
+     */
+    protected $_cacheLifeTime;
+
 
     /**
      * Init default parameters
@@ -55,10 +78,26 @@ class SourPHPCore{
      * @return string Content of url, returns false if fails
      */
     function fetchUrl($url) {
-        if( $data = @file_get_contents($url) ) {
-            return $data;
+        if( $this->_cacheHandler ) {
+            $hash = $this->_cacheHandler->hashUrl ( $url, $this->_cachePrefix );
+
+            //check if cache expired, if so regenerate it
+            if( $this->_cacheHandler->isExpired($hash, $this->_cacheLifeTime ) ) {
+                $data = @file_get_contents($url);
+                $this->_cacheHandler->regenerateData ( $hash, $data );
+            }
+            
+            return $this->_cacheHandler->getCurrentData($hash);
         }
-        return false;
+        //if cache handler not set
+        else {
+
+            if( $data = @file_get_contents($url) ) {
+                return $data;
+            }
+            return false;
+    
+        }
     }
 
     /**
@@ -259,4 +298,45 @@ class SourPHPCore{
         return empty($results)?false:$results;
 
     }
+
+
+
+    /**
+     * sets cache handler
+     *
+     * @param object $handler 
+     */
+    function setCacheHandler($handler) {
+        $implements = class_implements($handler);
+
+        if( !in_array( "SourPHPUrlCacheInterface", $implements ) ) {
+            return false;
+        }
+       
+        $this->_cacheHandler = $handler; 
+        return true;
+    }
+
+
+    /**
+     * sets cache life time _cacheLifeTime
+     *
+     * @param int $lifeTime
+     */
+    function setCacheLifeTime($lifeTime) {
+        $this->_cacheLifeTime = $lifeTime;
+        
+        return $this->_cacheLifeTime;
+    }
+
+
+    /**
+     * sets cachePrefix
+     *
+     * @param string $prefix
+     */
+    function setCachePrefix($prefix){
+        $this->_cachePrefix = $prefix;
+    }
+
 }
