@@ -215,10 +215,13 @@ class SourPHPCore{
     function getNumberOfPages($doc) {
 
         $query = "//select[@class='pagis']/option";
-        $nodeList = $this->XPathQueryToDoc($doc, $query);
+        
+        if($doc) {
+            $nodeList = $this->XPathQueryToDoc($doc, $query);
 
-        foreach($nodeList as $node) {
-            $totalPageNum = $node->nodeValue;
+            foreach($nodeList as $node) {
+                $totalPageNum = $node->nodeValue;
+            }
         }
 
         return (int) $totalPageNum;
