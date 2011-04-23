@@ -17,7 +17,7 @@
 /**
  * SourPHPCore
  *
- * PHP Client to fetch data from http://sozluk.sourtimes.org
+ * PHP Client to fetch data from http://www.eksisozluk.com
  * @author    Osman Yuksel <yuxel |AT| sonsuzdongu |DOT| com>
  */
 class SourPHPCore{
@@ -65,7 +65,7 @@ class SourPHPCore{
      * Init default parameters
      */
     public function __construct() {
-        $this->url = "http://sozluk.sourtimes.org/";
+        $this->url = "http://www.eksisozluk.com/";
         $this->contentPerPage = 25; 
     }
 
