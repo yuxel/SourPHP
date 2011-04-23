@@ -62,14 +62,34 @@ class SourPHPCore{
 
 
     /**
+     * URL fetcher
+     * 
+     * @var function
+     */
+    protected $_urlFetcher;
+
+
+    /**
      * Init default parameters
      */
     public function __construct() {
         $this->url = "http://www.eksisozluk.com/";
         $this->contentPerPage = 25; 
+
+        $this->_urlFetcher = function ($url, $hash) {
+            $data = @file_get_contents($url);
+            $this->_cacheHandler->regenerateData ( $hash, $data );
+        };
     }
 
-
+    /**
+     * Set url fetcher function which gets $url and $hash as parameters
+     *
+     * @param $urFetcherFunction function gets $url and $hash as parameters
+     */
+    public function setUrlFetcher($urFetcherFunction) {
+        $this->_urlFetcher = $urFetcherFunction;
+    }
 
     /**
      * fetchs data from Url
@@ -83,8 +103,7 @@ class SourPHPCore{
 
             //check if cache expired, if so regenerate it
             if( $this->_cacheHandler->isExpired($hash, $this->_cacheLifeTime ) ) {
-                $data = @file_get_contents($url);
-                $this->_cacheHandler->regenerateData ( $hash, $data );
+                call_user_func($this->_fetchCallback, $url , $hash);
             }
             
             return $this->_cacheHandler->getCurrentData($hash);
