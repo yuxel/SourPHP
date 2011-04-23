@@ -76,9 +76,9 @@ class SourPHPCore{
         $this->url = "http://www.eksisozluk.com/";
         $this->contentPerPage = 25; 
 
-        $this->_urlFetcher = function ($url, $hash) {
+        $this->_urlFetcher = function ($url, $hash, $cacheHandler) {
             $data = @file_get_contents($url);
-            $this->_cacheHandler->regenerateData ( $hash, $data );
+            $cacheHandler->regenerateData ($hash, $data);
         };
     }
 
@@ -103,7 +103,7 @@ class SourPHPCore{
 
             //check if cache expired, if so regenerate it
             if( $this->_cacheHandler->isExpired($hash, $this->_cacheLifeTime ) ) {
-                call_user_func($this->_fetchCallback, $url , $hash);
+                call_user_func($this->_urlFetcher, $url , $hash, $this->_cacheHandler);
             }
             
             return $this->_cacheHandler->getCurrentData($hash);
